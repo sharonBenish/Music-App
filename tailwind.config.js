@@ -3,8 +3,15 @@ module.exports = {
   content: [],
   theme: {
     extend: {
+      fontFamily:{
+        body: ['Nunito Sans']
+      },
       colors:{
-        'deepp':'hsl(209, 23%, 22%)',
+        e:{
+          'background':'#0E0E0E',
+          'orange':'#FF7A01',
+          'grey':'#898A8D'
+        }
       }
     },
   },
