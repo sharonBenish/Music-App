@@ -1,15 +1,21 @@
 <template>
   <div class="sidebar w-1/5 min-w-max h-screen pt-3 px-5 bg-e-background">
-    <div class="logo flex items-center">
-      <img class="w-18" src="../assets/images/logo.svg" alt="">
-      <img class="w-18" src="../assets/images/musi.svg" alt="">
+    <div class="flex items-center justify-between">
+      <div class="logo flex items-center">
+        <img class="w-12" src="../assets/images/logo.svg" alt="">
+        <img class="w-14" src="../assets/images/musi.svg" alt="">
+      </div>
+      <div class="search text-e-grey mr-5">
+        <Icon name="ri:search-line" size="1.3em"/>
+      </div>
     </div>
+    
     <div>
       <nav>
         <ul class=" flex flex-col gap-5 text-e-grey pl-5 mt-5">
           <li>
             <NuxtLink class="flex items-center gap-3 cursor-pointer">
-              <Icon name="ri:home-5-fill" />
+              <Icon name="ri:home-fill" />
               <span>Home</span>
             </NuxtLink>
           </li>
@@ -32,7 +38,7 @@
             </NuxtLink>
           </li>
           <li>
-            <NuxtLink class="flex items-cente gap-3 cursor-pointer">
+            <NuxtLink class="flex items-center gap-3 cursor-pointer">
               <Icon name="ri:play-circle-fill" />
               <span>Playlist</span>
             </NuxtLink>
@@ -44,7 +50,13 @@
             </NuxtLink>
           </li>
           <li>
-            <NuxtLink class="flex items-cente gap-3 cursor-pointer">
+            <NuxtLink class="flex items-center gap-3 cursor-pointer">
+              <Icon name="ri:heart-fill" />
+              <span>Favorites</span>
+            </NuxtLink>
+          </li>
+          <li>
+            <NuxtLink class="flex items-center gap-3 cursor-pointer">
               <Icon name="ri:settings-3-fill"/>
               <span>Settings</span>
             </NuxtLink>

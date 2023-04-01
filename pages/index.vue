@@ -1,6 +1,9 @@
 <template>
     <div>
         <SideBar/>
+        <div>
+            <PlayerBottomBar />
+        </div>
     </div>
 </template>
 

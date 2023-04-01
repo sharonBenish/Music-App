@@ -10,7 +10,8 @@ module.exports = {
         e:{
           'background':'#0E0E0E',
           'orange':'#FF7A01',
-          'grey':'#898A8D'
+          'grey':'#898A8D',
+          'blackLight': '#171718'
         }
       }
     },
