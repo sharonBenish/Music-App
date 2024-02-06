@@ -67,7 +67,7 @@ onBeforeRouteLeave(()=>{
         </div>
         <div>
             <TrackList v-if="playlist?.songs ? playlist.songs.length > 0: false" :isPlaylist="true" :tracks="(playlist?.songs as Track[])"  :includeArtist="false" @play-clicked="playMusicClicked"/>
-            <div class="text-3xl text-center text-white">No songs</div>
+            <div v-else class="text-3xl text-center text-white">No songs</div>
         </div>
     </div>
 </template>
