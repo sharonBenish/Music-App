@@ -14,6 +14,9 @@ export const useArtistStore = defineStore('artistStore', {
     }),
     getters: {},
     actions: {
+        clearSearchedArtists(){
+            this.searchedArtists = []
+        },
         clearTopArtist(){
             this.topArtists = []
         },

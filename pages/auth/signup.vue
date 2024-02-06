@@ -79,7 +79,7 @@ async function signUp (){
 </script>
 
 <template>
-    <div class="signup">
+    <div class="w-full">
         <div v-if="success">
             <div class="h-full w-full grid place-items-center">
                 <!-- <lottie-player
@@ -93,7 +93,7 @@ async function signUp (){
                 </p>
             </div>
         </div>
-        <form ref="signupForm" v-else>
+        <form ref="signupForm" v-else class="md:bg-e-sidebar-bg md:shadow-md md:px-10 md:py-12 rounded-md">
             <div class="form-item">
                 <label>First Name</label>
                 <input type="text" v-model="newUser.firstName" />
@@ -111,6 +111,8 @@ async function signUp (){
                 <input type="password" v-model="newUser.password" />
             </div>
 
+            <p class="error" v-if="hasError">- {{  errorMsg }}</p>
+
             <div class="flex justify-center mt-10 mb-2">
                 <button @click.prevent="signUp" class="flex justify-center items-center gap-4">
                     <p>Sign Up</p>
@@ -121,16 +123,12 @@ async function signUp (){
 
             </div>
             
-            <p>Have an account already? <NuxtLink to="/auth/signin">Sign In</NuxtLink> to your account</p>
+            <p class="footer">Have an account already? <NuxtLink to="/auth/signin">Sign In</NuxtLink> to your account</p>
         </form>
-        <p>{{ errorMsg }}</p>
     </div>
 </template>
 
 <style scoped>
-.signup{
-    @apply border-2 border-e-orange-blur rounded-md px-10 py-10 w-[50%]
-}
 
 input{
     @apply border-0 outline-none px-4 py-3 mt-2 rounded w-full bg-e-grey/20;
@@ -138,12 +136,16 @@ input{
 }
 
 label{
-    @apply text-e-orange/70 font-light
+    @apply text-e-orange font-light
+}
+
+.error{
+    @apply text-red-600 text-left
 }
 
 button{
-    @apply bg-e-orange/70 text-e-sidebar-bg px-4 py-3 rounded w-[60%] font-bold mx-auto;
-    @apply hover:bg-e-orange focus:scale-95
+    @apply bg-e-orange/70 text-e-sidebar-bg px-4 py-3 rounded w-full font-bold mx-auto;
+    @apply hover:bg-e-orange active:scale-95
 }
 
 .form-item{
@@ -156,5 +158,9 @@ p{
 
 a{
     @apply underline text-e-orange 
+}
+
+.footer{
+    @apply text-left my-4 
 }
 </style>

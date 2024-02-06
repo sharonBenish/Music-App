@@ -11,6 +11,10 @@ import { useAlbumStore } from '~~/store/albums';
 import { useTrackStore } from '~~/store/tracks';
 import { useArtistStore } from '~~/store/artists';
 
+definePageMeta({
+  middleware: 'auth'
+})
+
 const trackStore = useTrackStore()
 const albumStore = useAlbumStore()
 const artistStore = useArtistStore()

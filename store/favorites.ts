@@ -1,4 +1,4 @@
-import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, getDocs, doc, deleteDoc } from 'firebase/firestore';
+import { addDoc, collection, onSnapshot, orderBy, query, serverTimestamp, getDocs, doc, deleteDoc, where } from 'firebase/firestore';
 import { defineStore } from 'pinia'
 import { Track } from '~/types/tracks';
 const { user } = useFirebaseAuth();
@@ -12,8 +12,11 @@ export const useFavoriteStore = defineStore('favoriteStore', {
     actions: {
         async addToFavorites (track: Track){
             const docRef = collection(nuxtApp.$firestore,`users/${user.value?.uid}/favorites`);
-            console.log(nuxtApp.$firestore)
+            
             try{
+                // const q = query(docRef, where('id', '==', track.id))
+                // const qSnap = await getDocs(q)
+                // console.log(qSnap)
                 const res = await addDoc(docRef, {...track, timestamp:serverTimestamp()})
                 if(res){
                     console.log(res)
@@ -38,14 +41,17 @@ export const useFavoriteStore = defineStore('favoriteStore', {
                     this.favorites = favoritesSongs
                     console.log(this.favorites)
                 });
+
+                return unsubscribe
             }
             catch(error){
                 console.log(error)
             }
+
         },
 
         async deleteFavorite(docId: string){
-            const docRef = doc(nuxtApp.$firestore, 'users', user.value?.uid, 'favorites', docId)
+            const docRef = doc(nuxtApp.$firestore, `users/${user.value?.uid}/favorites/${docId}`)
             try{
                 const res = await deleteDoc(docRef)
                 return true

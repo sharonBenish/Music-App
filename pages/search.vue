@@ -5,6 +5,10 @@ import { useAlbumStore } from '~~/store/albums';
 import { useArtistStore } from '~~/store/artists';
 import { useTrackStore } from '~~/store/tracks';
 
+definePageMeta({
+  middleware: 'auth'
+})
+
 const route = useRoute()
 const router = useRouter()
 
@@ -23,9 +27,9 @@ const { searchedAlbums } = toRefs(albumStore)
 const { searchedArtists } = toRefs(artistStore)
 const { isPlaying, currentSongUrl, isPaused } = toRefs(playerStore)
 const { playMusic, stopPlaying, pausePlayMusic, addToQueue } = playerStore
-const { searchTracks } = trackStore
-const { searchAlbums } = albumStore
-const { searchArtists } = artistStore
+const { searchTracks, clearSearchedTracks } = trackStore
+const { searchAlbums, clearSearchedAlbums } = albumStore
+const { searchArtists, clearSearchedArtists } = artistStore
 
 //music player logic......................................
 function playMusicClicked (music: Track){
@@ -44,10 +48,22 @@ function changeSearchTab(tab:'Tracks'| 'Artists'| 'Albums'| 'Playlists'){
 }
 
 //watchers................................................
-watch(query, ()=>{
+watch(query, async()=>{
     if(query.value == ''){
         console.log(route.params)
+        await navigateTo('/')
     }
+    searchTracks(query.value)
+    searchAlbums(searchQuery.value)
+    searchArtists(searchQuery.value)
+})
+
+onBeforeRouteLeave(()=>{
+    clearSearchedAlbums()
+    clearSearchedArtists()
+    clearSearchedTracks()
+})
+onMounted(()=>{
     searchTracks(query.value)
     searchAlbums(searchQuery.value)
     searchArtists(searchQuery.value)
@@ -55,12 +71,11 @@ watch(query, ()=>{
 </script>
 
 <template>
-    <div class="px-6">
-        <div class="flex gap-3 mb-4 text-white">
+    <div class="px-2 sm:px-6">
+        <div class="flex justify-center md:justify-start gap-3 mb-4 text-white">
             <button :class="activeSearchTab==='Tracks'?'bg-e-orange':'bg-e-orange-blur'" class="text-sm px-4 py-1.5 rounded-full hover:bg-e-orange" @click="changeSearchTab('Tracks')">Tracks</button>
             <button :class="activeSearchTab==='Albums'?'bg-e-orange':'bg-e-orange-blur'" class="text-sm px-4 py-1.5 rounded-full hover:bg-e-orange" @click="changeSearchTab('Albums')">Albums</button>
             <button :class="activeSearchTab==='Artists'?'bg-e-orange':'bg-e-orange-blur'" class="text-sm px-4 py-1.5 rounded-full hover:bg-e-orange" @click="changeSearchTab('Artists')">Artists</button>
-            <button :class="activeSearchTab==='Playlists'?'bg-e-orange':'bg-e-orange-blur'" class="text-sm px-4 py-1.5 rounded-full hover:bg-e-orange" @click="changeSearchTab('Playlists')">Playlists</button>
         </div>
 
         <div class="pb-20 text-white">
@@ -71,7 +86,7 @@ watch(query, ()=>{
 
             <!--Showing albums that match search query-->
             <div v-if="activeSearchTab === 'Albums'">
-                <div v-if="searchedAlbums.length > 0" class="flex flex-wrap">
+                <div v-if="searchedAlbums.length > 0" class="grid gap-y-8 xl:gap-y-10 justify-items-center grid-cols-2 xs:grid-cols-3 xl:grid-cols-4">
                     <MusicCard v-for="album in searchedAlbums" :index="album.id" :card="album"/>
                 </div>
                 <div v-else>
@@ -84,7 +99,7 @@ watch(query, ()=>{
 
             <!--Showing artists that match search query-->
             <div v-if="activeSearchTab === 'Artists'">
-                <div v-if="searchedArtists.length > 0" class="flex flex-wrap">
+                <div v-if="searchedArtists.length > 0" class="grid gap-y-8 xl:gap-y-10 justify-items-center grid-cols-2 xs:grid-cols-3 xl:grid-cols-4">
                     <MusicCard  v-for="artist in searchedArtists" :index="artist.id" :card="artist"/>
                 </div>
                 <div v-else>

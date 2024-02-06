@@ -13,6 +13,9 @@ export const useAlbumStore = defineStore('albumStore', {
     }),
     getters: {},
     actions: {
+        clearSearchedAlbums(){
+            this.searchedAlbums = []
+        },
         clearTopAlbums(){
             this.topAlbums = []
         },

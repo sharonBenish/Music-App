@@ -49,6 +49,11 @@ export type Album ={
     tracks?:Track[]
 }
 
+export type Playlist = {
+    name: string
+    songs: Track[]
+}
+
 export type ResponseHeader = {
     status: string
     code: number

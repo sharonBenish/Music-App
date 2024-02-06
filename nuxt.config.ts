@@ -1,5 +1,7 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+    ssr: false,
+    
     modules: [
         '@nuxtjs/tailwindcss',
         'nuxt-icon',
@@ -19,7 +21,7 @@ export default defineNuxtConfig({
     },
 
     routeRules: {
-        '/': { redirect: '/auth/signin' },
+        // '/': { redirect: '/auth/signin' },
     },
 
     plugins: [

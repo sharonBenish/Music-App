@@ -30,6 +30,11 @@ async function signIn (){
         hasError.value = true
         return
     }
+    else if (userLogin.value.password.trim() === ''){
+        errorMsg.value = "Please input a password";
+        hasError.value = true
+        return
+    }
     try {
         loading.value = true;
         const res = await signInUser(userLogin.value.email, userLogin.value.password)
@@ -66,7 +71,7 @@ onMounted(()=>{
 </script>
 
 <template>
-    <div class="signin">
+    <div class="w-full">
         <div v-if="success">
             <div class="h-full w-full grid place-items-center">
                 <!-- <lottie-player
@@ -81,7 +86,7 @@ onMounted(()=>{
                 </p>
             </div>
         </div>
-        <form v-else>
+        <form v-else class="md:bg-e-sidebar-bg md:shadow-md md:px-10 md:py-12 rounded-md">
             <div class="form-item">
                 <label>Email</label>
                 <input v-model="userLogin.email" type="text" />
@@ -90,6 +95,8 @@ onMounted(()=>{
                 <label>Password</label>
                 <input v-model="userLogin.password" type="password" />
             </div>
+
+            <p class="error" v-if="hasError">- {{  errorMsg }}</p>
 
             <div class="flex justify-center mt-10 mb-2">
                 <button @click.prevent="signIn" class="flex justify-center items-center gap-4">
@@ -100,29 +107,32 @@ onMounted(()=>{
                 </button>
             </div>
             
-            <p>Don't have an account? <NuxtLink to="/auth/signup">Sign Up</NuxtLink> for an account</p>
+            <p class="footer">Don't have an account? <NuxtLink to="/auth/signup">Sign Up</NuxtLink> for an account</p>
         </form>
-        <p>{{ errorMsg }}</p>
     </div>
 </template>
 
 <style scoped>
-.signin{
+/* .signin{
     @apply border-2 border-e-orange-blur rounded-md px-10 py-10 w-[50%]
-}
+} */
 
 input{
-    @apply border-0 outline-none px-4 py-3 mt-2 rounded w-full bg-e-grey/20;
+    @apply border-0 shadow-md outline-none px-4 py-3 mt-2 rounded w-full bg-e-grey/20;
     @apply focus:bg-white text-e-orange
 }
 
+.error{
+    @apply text-red-600 text-left
+}
+
 label{
-    @apply text-e-orange/70 font-light
+    @apply text-e-orange font-light
 }
 
 button{
-    @apply bg-e-orange/70 text-e-sidebar-bg px-4 py-3 rounded w-[60%] font-bold mx-auto;
-    @apply hover:bg-e-orange focus:scale-95
+    @apply bg-e-orange/70 text-e-sidebar-bg px-4 py-3 rounded w-full font-bold mx-auto;
+    @apply hover:bg-e-orange active:scale-95
 }
 
 .form-item{
@@ -135,5 +145,8 @@ form p{
 
 a{
     @apply underline text-e-orange 
+}
+.footer{
+    @apply text-left my-4 
 }
 </style>

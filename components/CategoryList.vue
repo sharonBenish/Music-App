@@ -1,7 +1,7 @@
 <template>
     <div class="pt-4 pl-4 mb-4">
-        <h2 class="text-white font-semibold text-2xl mb-3" v-if="category.length > 0">{{ title }}</h2>
-        <div class="text-red-400 flex gap-1 overflow-scroll scrollbar-hide">
+        <h2 class="text-white font-semibold text-xl sm:text-2xl mb-1.5 sm:mb-3" v-if="category.length > 0">{{ title }}</h2>
+        <div class="text-red-400 flex gap-3 justify-items-center overflow-scroll scrollbar-hide">
             <MusicCard :card="item" v-for="item in category" @song-clicked="queueSongs" />
         </div>
     </div>

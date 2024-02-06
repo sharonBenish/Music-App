@@ -3,6 +3,10 @@ import { useArtistStore } from '~/store/artists';
 import { usePlayerStore } from '~/store/player';
 import { Track } from '~/types/tracks';
 
+definePageMeta({
+  middleware: 'auth'
+})
+
 const route = useRoute();
 
 const artistStore = useArtistStore();
@@ -55,12 +59,12 @@ onMounted(()=>{
 
 <template>
     <div class="px-6 ">
-        <div class="flex gap-10 pt-10 pb-20">
-            <div class="w-[300px] h-[300px] shrink-0">
+        <div class="flex gap-6 sm:gap-10 pt-10 pb-10 sm:pb-20">
+            <div class="h-[150px] w-[150px] sm:w-[200px] sm:h-[200px] shrink-0 ">
                 <img :src="artistDetails.artistImage" class="w-full h-full" />
             </div>
             <div class="text-white">
-                <h1 v-html="artistDetails.artistName" class="text-6xl font-semibold my-4"></h1>
+                <h1 v-html="artistDetails.artistName" class="text-2xl sm:text-4xl md:text-6xl font-semibold my-4"></h1>
                 <div v-if="artistDetails.website"><span class="text-e-orange">Website: </span><a>{{ artistDetails.website }}</a></div>
                 <div><span class="text-e-orange">Join date: </span>{{ artistDetails.joindate }}</div>
             </div>
@@ -76,7 +80,7 @@ onMounted(()=>{
                 <div v-if="activeTab === 'Tracks'">
                     <TrackList :tracks="artistTracks" :include-artist="false" @play-clicked="playMusicClicked" />
                 </div>
-                <div v-else class="flex flex-wrap min-h-[40rem]">
+                <div v-else class="grid gap-y-8 xl:gap-y-10 justify-items-center grid-cols-2 xs:grid-cols-3 xl:grid-cols-4">
                     <MusicCard v-if="artistAlbums.length > 0"  v-for="album in artistAlbums" :index="album.id" :card="album"/>
                     <Icon v-else name="svg-spinners:3-dots-bounce" size="3em" class="text-e-orange justify-self-center w-full" />
                 </div>

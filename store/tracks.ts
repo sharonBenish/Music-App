@@ -10,6 +10,9 @@ export const useTrackStore = defineStore('trackStore', {
     }),
     getters: {},
     actions: {
+        clearSearchedTracks(){
+            this.searchedTracks = []
+        },
         async getTopTracks(){
             try{
                 const {data} = await useFetch<FetchResponse<Track>>(`${url}&format=jsonpretty&imagesize=600&boost=popularity_month&limit=12`)

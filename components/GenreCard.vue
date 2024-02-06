@@ -2,7 +2,7 @@
     <div @click="goToGenre">
         <div class="card hover:cursor-pointer relative">
             <p class="absolute top-5 left-5 text-white font-bold z-10">{{ genre.name }}</p>
-            <img :src="`/genres/${genre.image}.jpg`" alt="picture" class="h-[13rem] w-[13rem] rounded-md drop-shadow-light object-cover" />
+            <img :src="`/genres/${genre.image}.jpg`" alt="picture" class="h-36 w-36  sm:h-44 sm:w-[200px] md:h-36 md:w-40 lg:h-48 lg:w-[200px] rounded-md drop-shadow-light" />
         </div>
     </div>
 </template>

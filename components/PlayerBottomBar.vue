@@ -1,8 +1,8 @@
 <template>
-    <div class='bar flex absolute bottom-0 bg-e-blackLight w-full py-3 px-5 justify-between items-center max-h-[90px]'>
+    <div class='bar flex flex-col md:flex-row shadow-white shadow-lg absolute bottom-0 bg-e-blackLight w-full py-3 px-3 md:px-5 justify-between md:items-center md:max-h-[90px]'>
         <div class="flex items-center gap-4 cursor-pointer">
-            <img :src="currentSong.image" class="song-image w-10 h-10"/>
-            <div class="song-details max-w-[150px] overflow-hidden">
+            <img :src="currentSong.image" class="hidden md:block song-image w-10 h-10"/>
+            <div class="song-details w-[80%] md:max-w-[150px] overflow-hidden">
                 <div class="title text-white text-sm scrolling-text" v-html="currentSong.name"></div>
                 <div class="artist text-e-grey text-xs" v-html="currentSong.artist_name"></div>
             </div>
@@ -13,23 +13,29 @@
             </div>
             <div class="playlist relative text-e-grey hover:text-white hover:cursor-pointer">
                 <!-- <Icon name="ri:play-list-add-line"  size="1.1em" /> -->
-                <Icon @click="showPlaylists" name="ic:sharp-playlist-add" class="hover:text-e-orange" size="1.1em" />
-                <div class="absolute bottom-[120%] left-0" v-if="playlistVisible">
-                    <PlaylistOptions />
+                <Icon @click="openPlaylistModal" name="ic:sharp-playlist-add" class="hover:text-e-orange" size="1.1em" />
+                <div class="fixed top-0 bottom-[-90px] left-[15rem]" v-if="playlistModalVisible">
+                    <PlaylistOptions :track="currentSong" />
                 </div>
             </div>
         </div>
-        <div>
-            <div class="flex flex-col-reverse items-center gap-3">
+        <div class="my-2 md:my-0">
+            <div class="flex flex-col md:flex-col-reverse items-center gap-3">
                 <div class="flex text-xs gap-3 items-center">
                     <span class="text-white">{{ currentTime }}</span>
                     <div ref="progressBar" class="duration relative hover:cursor-pointer" @click="handleClick">
-                        <div class="w-80 h-1 bg-e-grey"></div>
+                        <div class="w-64 lg:w-80 h-1 bg-e-grey"></div>
                         <div class="h-1 min-w-min bg-white absolute top-0 left-0" :style="{ width: progress }"></div>
                     </div>
                     <span class="text-e-grey text-xs">{{ convertToMinuteDuration(currentSong.duration)}}</span>
                 </div>
-                <div class="controls text-e-grey flex items-center">
+                <div class="controls text-e-grey flex justify-center items-center w-full">
+                    <div class="md:hidden mr-3 repeat hover:text-white hover:cursor-pointer" :class="repeatOn?'text-white':''" @click="controlRepeat">
+                        <Icon :name="repeatIcon!"  size="1.1em"/>
+                    </div>
+                    <div class="md:hidden mr-6 shuffle hover:text-white hover:cursor-pointer" :class="shuffleOn?'text-white':''" @click="controlShuffle">
+                        <Icon name="ri:shuffle-fill"  size="1.1em"/>
+                    </div>
                     <div class="prev hover:cursor-pointer" @click="playPrev">
                         <Icon name="ant-design:fast-backward-filled" size="1.5em"/>
                     </div>
@@ -39,10 +45,13 @@
                     <div class="next hover:cursor-pointer" @click="playNext">
                         <Icon name="ant-design:fast-forward-filled" size="1.5em" />
                     </div>
+                    <div class="md:hidden ml-6 volume hover:text-white hover:cursor-pointer" @click="toggleMute">
+                        <Icon :name="audio.muted?'solar:muted-linear':'ri:volume-up-line'" size="1.1em"/>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="options text-e-grey flex text-center gap-3 text-sm">
+        <div class="hidden md:flex options text-e-grey text-center gap-3 text-sm">
             <div class="repeat hover:text-white hover:cursor-pointer" :class="repeatOn?'text-white':''" @click="controlRepeat">
                 <Icon :name="repeatIcon!"  size="1.1em"/>
             </div>
@@ -63,6 +72,7 @@
 import { usePlayerStore } from '~/store/player';
 import { convertToMinuteDuration } from '~/composables/useTime'
 import { useFavoriteStore } from '~/store/favorites';
+import { usePlaylistStore } from '~~/store/playlist';
 const { toast, showToast } = useToast()
 
 const favoriteStore = useFavoriteStore()
@@ -70,8 +80,12 @@ const { favorites } = toRefs(favoriteStore)
 const { addToFavorites, getFavorites, deleteFavorite } = favoriteStore
 
 const playerStore = usePlayerStore()
-const { isPlaying, currentSongUrl, isPaused, currentSong } = toRefs(playerStore)
-const { pausePlayMusic, stopPlaying, playNextSong, playPrevSong } = playerStore
+const { isPlaying, currentSongUrl, isPaused, currentSong, songQueue } = toRefs(playerStore)
+const { pausePlayMusic, stopPlaying, playNextSong, playPrevSong, playShuffle } = playerStore
+
+const playlistStore = usePlaylistStore()
+const { playlist:getPlaylist, showPlaylistModal, hidePlaylistModal  } = playlistStore
+const { playlistModalVisible } = toRefs(playlistStore);
 
 const audio = new Audio (currentSongUrl.value)
 
@@ -96,14 +110,11 @@ const repeatSong = ref(false)
 const repeatIcon = computed (()=>{
     if(repeatOn.value){
         if (repeatSong.value){
-            console.log("repeat song")
             return 'ri:repeat-one-line'
         }else{
-            console.log("repeat on")
             return 'ri:repeat-line'
         }
     }else{
-        console.log("repeat off")
         return 'ri:repeat-line'
     }
 })
@@ -146,11 +157,21 @@ function controlPlay(){
 }
 
 function playNext(){
-    playNextSong()
+    if(shuffleOn.value){
+        playShuffle()
+    }
+    else{
+        playNextSong()
+    }
 }
 
 function playPrev(){
-    playPrevSong()
+    if(shuffleOn.value){
+        playShuffle()
+    }
+    else{
+        playPrevSong()
+    }
 }
 
 //Favorite Logic
@@ -182,9 +203,18 @@ async function addSongToFavorite (){
 }
 
 //Playlists Logic
-const playlistVisible = ref(false)
-function showPlaylists (){
-    playlistVisible.value = !playlistVisible.value
+function openPlaylistModal(event:any){
+    console.log(window.innerWidth)
+    const mouse = {
+        x: window.innerWidth < 768 ? event.clientX :event.clientX + 250,
+        y: event.clientY + 30
+    }
+    if(playlistModalVisible.value){
+        hidePlaylistModal()
+    }
+    else{
+        showPlaylistModal(mouse)
+    }
 }
 
 //watchers.............................
@@ -197,10 +227,10 @@ watch(isPaused, ()=>{
     }
 })
 
-watch(currentSongUrl,()=>{
+watch(currentSongUrl,async ()=>{
     console.log(currentSongUrl.value)
     audio.src = currentSongUrl.value
-    audio.play()
+    await audio.play()
 })
 
 // watch(audio.duration, ()=>{
@@ -218,7 +248,20 @@ onMounted(()=>{
     audio.onended = ()=>{
         if(repeatOn.value && !repeatSong.value){
             playNext()
-        }else{
+        }
+        else if (!repeatOn.value && !repeatSong.value){
+            const currentSongIdx = songQueue.value.findIndex(song => song.id === currentSong.value.id)
+            console.log(currentSongIdx, currentSong.value)
+            if ((currentSongIdx === songQueue.value.length - 1) && !shuffleOn.value){
+                console.log('last song', currentSongIdx)
+                stopPlaying()
+                audio.pause()
+            }
+            else{
+                playNext()
+            }
+        }
+        else{
             stopPlaying()
             audio.pause()
         }  
@@ -274,11 +317,11 @@ onBeforeUnmount(()=>{
 
 @keyframes scrolling-animation {
   0% {
-    transform: translateX(0%);
+    transform: translateX(5%);
   }
-  83.333% {
+  /* 83.333% {
     transform: translateX(-100%);
-  }
+  } */
   100% {
     transform: translateX(-100%);
   }

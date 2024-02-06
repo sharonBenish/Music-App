@@ -26,10 +26,15 @@ export const usePlayerStore = defineStore('playerStore', {
         addToQueue(queue: Track[]){
             this.songQueue = queue
         },
+        playShuffle(){
+            const randIdx = Math.floor(Math.random()*this.songQueue.length)
+            this.currentSong = this.songQueue[randIdx]
+            this.currentSongUrl= this.currentSong.audio
+        },
         playNextSong(){
             const currentSongIdx = this.songQueue.findIndex(song => song.id === this.currentSong.id)
             if (currentSongIdx !== -1){
-                console.log(this.songQueue[currentSongIdx + 1])
+                // console.log('curr SOng',this.songQueue[currentSongIdx + 1], currentSongIdx)
                 if (currentSongIdx === this.songQueue.length -1){
                     this.currentSong = this.songQueue[0]
                     this.currentSongUrl = this.currentSong.audio
@@ -39,8 +44,7 @@ export const usePlayerStore = defineStore('playerStore', {
                     this.currentSongUrl = this.currentSong.audio
                 }
                 
-            }
-            
+            }    
         },
         playPrevSong(){
             const currentSongIdx = this.songQueue.findIndex(song => song.id === this.currentSong.id)

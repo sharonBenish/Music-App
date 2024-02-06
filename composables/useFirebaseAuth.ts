@@ -1,8 +1,9 @@
-import { createUserWithEmailAndPassword, User, signOut, signInWithEmailAndPassword } from 'firebase/auth'
+import { createUserWithEmailAndPassword, User, signOut, signInWithEmailAndPassword, Auth } from 'firebase/auth'
 import { AuthResponse } from '~/types/auth';
 
 export default function() {
   const nuxtApp = useNuxtApp();
+  // const auth = inject('auth') as Auth
 
   const user = useState<User | null>("fb_user", () => null)
 
@@ -25,6 +26,7 @@ export default function() {
   }
 
   const signOutUser = async() =>{
+    user.value = null
     signOut(nuxtApp.$auth)
     .then(()=>{
       console.log('signed out')

@@ -1,5 +1,5 @@
 <template>
-  <div class="sidebar w-1/6 min-w-max h-screen pt-3 px-5 bg-e-sidebar-bg shrink-0">
+  <div class="sidebar w-[12rem] lg:w-[15rem] h-screen pt-3 px-5 bg-e-sidebar-bg shrink-0">
     <div>
       <div class="logo flex items-center">
         <img class="w-12" src="../assets/images/logo.svg" alt="">
@@ -38,7 +38,7 @@
             </NuxtLink>
           </li>
           <li>
-            <NuxtLink class="flex items-center gap-3 cursor-pointer hover:text-white">
+            <NuxtLink to="/playlists" class="flex items-center gap-3 cursor-pointer hover:text-white">
               <Icon name="ri:play-circle-fill" />
               <span>Playlist</span>
             </NuxtLink>
